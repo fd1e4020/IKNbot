@@ -9,6 +9,8 @@ import urllib.parse
 from lxml import etree
 import sys
 
+# TODO for future upgrades, use .config.yaml instead
+
 load_dotenv()
 TOKEN   = os.getenv('DISCORD_TOKEN')
 GUILD   = os.getenv('DISCORD_GUILD')
