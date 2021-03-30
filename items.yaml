@@ -1,0 +1,268 @@
+---
+binoculars: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Binoculars
+  locations: Mall Sports Stores(?), Armouries(?), Stadiums, Unknown(?)
+  encumbrance: 4%
+DNA extractor: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#DNA_Extractor
+  locations: NecroTech Buildings (6%) 
+  encumbrance: 4%
+  notes: variable drop rate subject to survivor/zombie ration
+first aid kit: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#First_Aid_Kit
+  locations: Mall Drugstores (?%/?%), Hospitals (14%), Churches (5%), Infirmaries (?%)
+  encumbrance: 2% 
+  notes: variable drop rate subject to survivor/zombie ration
+flak jacket: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Flak_Jacket
+  locations: Armouries (2%), Police Stations (2%), Junkyards (1%?) 
+  encumbrance: 2% 
+flare gun: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Flare_Gun
+  locations: Fire Stations (5%), Mall hardware stores (2%/3%), Armories (3%), Stadiums (2%), Police Departments (1%) 
+  encumbrance: 2%
+  notes: single-use only
+  accuracy: 2.5% base, 15% basic firearms
+  damage: 15 (12 against a flak jacket), 30 (24 against a flak jacket) if target is fuel-soaked
+fuel can: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Fuel_Can
+  locations: Auto Repair shops (4.3%/6.3%), Factories (2.4%/5.4%), Warehouses (~2%/~4%), carparks (2%?), Power Stations (2.1%/4.5%), Junkyards (1%?), Storehouses (>1%), Vehicle Depots (~2%), Streets (>1%) 
+  encumbrance: 10%
+  notes: duration 120 hours
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 1
+GPS unit: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#GPS_Unit
+  locations: Mall Tech Stores (9%/15%), NecroTech Buildings (6%)
+  encumbrance: 2%
+  notes: variable drop rate subject to survivor/zombie ration
+mobile phone: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Mobile_Phone
+  locations: Mall Tech Stores (9%/16%), Clubs (4%), Bars (1%), Junkyards (1%?) 
+  encumbrance: 2% 
+NecroTech revivification syringe: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#NecroTech_Revivification_Syringe
+  locations: NecroTech Buildings (12.4%*).
+  encumbrance: 2% 
+  notes: variable drop rate subject to survivor/zombie ration
+portable generator: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Portable_Generator
+  locations: Factories (2.4%/3.6%), Power Stations (?0%), Mall Hardware Stores(1%/2%), Storehouses (?%) 
+  encumbrance: 20% 
+radio: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Radio
+  locations: Mall Tech Store (2%), Police Departments (2%), Fire Departments (3%) 
+  encumbrance: 4% 
+radio transmitter: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Radio_Transmitter
+  locations: Mall Tech Store (8%), Fort Storehouses (?%) 
+  encumbrance: 20% 
+spray can: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Spray_Can
+  locations: Mall Hardware stores; Schools; Junkyards; Auto Repair shops (L 7.1%); Storehouses; Vehicle Depots 
+  encumbrance: 2%
+  notes: typically one to three uses
+toolbox: 
+  wiki: http://wiki.urbandead.com/index.php/Useful_Items#Toolbox
+  locations: Mall Hardware Stores, Auto Repair Shops, Factories, Fort Vehicle Depot, Fort Storehouse, Power Station 
+  encumbrance: 16% 
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+beer: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Beer
+  locations: Libraries; Mall bookstores; Schools; Junkyards; Barracks; Power Stations (2.9%/4.5%)
+  encumbrance: 2%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 3
+book: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Book
+  locations: Libraries; Mall bookstores; Schools; Junkyards; Barracks; Power Stations (2.9%/4.5%)
+  encumbrance: 2%
+crucifix: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Crucifix
+  locations: Cathedrals; Churches
+  encumbrance: 2%
+newspaper: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Newspaper
+  locations: Mall bookstores; NecroTech buildings; Pubs; Auto Repair Shops (2.9%/3.3%); Gatehouses
+  encumbrance: 2%
+  accuracy: 100%
+  damage: 0
+poetry book: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Poetry_Book
+  locations: Schools; Malls bookstores; Libraries
+  encumbrance: 2%
+stale candy: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Stale_Candy
+  locations: Mall candy stores (100%)
+  encumbrance: 0%
+  notes: not currently obtainable unless given
+wine: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Wine
+  locations: Mall liquor stores; Pubs; Clubs; Arms; Churches; Cathedrals; Hotels; Motels
+  encumbrance: 4%
+  notes: heals 1 HP
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 3
+wirecutters: 
+  wiki: http://wiki.urbandead.com/index.php/Assorted/Misc_Items#Wirecutters
+  locations: Fire Stations; Mall hardware stores; Junkyards; Storehouses; Vehicle Depots; Power Stations (2.9%/3.6%)
+  encumbrance: 4%
+  notes: not currently obtainable since September 2007
+crowbar: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Crowbar
+  locations: Power Stations (6.7%/7.2%), Warehouses (4%/5%), Auto Repair Shops (3%), Factories (3.7%/4.2%), Junkyards (1%?), Mall Hardware Store (?%), Vehicle Depots (?%)
+  encumbrance: 4%
+  accuracy: 5% base, 20% hand-to-hand
+  damage: 2
+  notes: chance to hit barricade not halved
+baseball bat: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Baseball_Bat
+  locations: Mall Sports Stores (41%/20%), Stadiums (13%), Clubs (1%), Pubs (1%), Junkyards (1%?)
+  encumbrance: 2%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+length of pipe: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Length_of_Pipe
+  locations: Factories (6.4%/9.2%), Power Stations (3.3%/3.6%), Warehouses (8%/10%), Junkyards (1%?), Storehouses (?%)
+  encumbrance: 4%
+  accuracy: 10% base, 25% hand-to-hand
+  notes: can be used to barricade at loosely
+  damage: 2
+knife:
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Knife
+  locations: Mall Hardware Stores (3%/7%), Junkyards (1%), Fort Infirmaries (?%), Schools (1%?), Pubs (1%?), Motels (?%), Mall Sports Stores(?%), Armories (?%)
+  encumbrance: 2%
+  accuracy: 20% base, 35% hand-to-hand, 50% hand-to-hand and knife combat
+  damage: 2
+fire axe: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Fire_Axe
+  locations: Fire Stations (6%), Mall Hardware Stores (4%/7%), Warehouses (4%/5%), Factories (2.9%/4.6%), Auto Repair Shops (2%), Junkyards (1%?), Vehicle Depots (?%); Power Stations (2.1%/4.8%)
+  encumbrance: 6%
+  accuracy: 10% base, 25% hand-to-hand or axe proficiency, 40% hand-to-hand and axe proficiency
+  damage: 3
+cricket bat: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Cricket_Bat
+  locations: Mall Sports Stores, Stadiums, Junk yards
+  encumbrance: 4%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 3
+fencing foil: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Fencing_Foil
+  locations: Mall Sports Stores, Stadiums, Schools, Junkyards
+  encumbrance: 4%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+golf club: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Golf_Club
+  locations: Mall Sports Stores, Stadiums
+  encumbrance: 4%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+hockey stick: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Hockey_Stick
+  locations: Mall Sports Stores, Stadiums
+  encumbrance: 4%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+pool cue: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Pool_Cue
+  locations:    Mall Sports Stores, Stadiums, Pubs (3%?)
+  encumbrance: 4%
+  accuracy: 25% base, 40% hand-to-hand
+  damage: 2
+  notes: 25% to break
+ski pole: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Ski_Pole
+  locations: Mall Sports Stores, Stadiums, Schools
+  encumbrance: 4%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+tennis racket: 
+  wiki: http://wiki.urbandead.com/index.php/Melee_Weapons#Tennis_Racket
+  locations: Mall Sports Stores, Stadiums, Junkyards
+  encumbrance: 4%
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2 
+pistol: 
+  wiki: http://wiki.urbandead.com/index.php/Firearms#Pistol
+  locations: Mall Gun Stores (4%/6%), Armories (3%), Police Departments (2%), Streets (1%?), Junkyards (1%?)
+  encumbrance: 4%
+  accuracy: 5% base, 30% basic firearm training, 55% pistol training, 65% advanced pistol training
+  damage: 5 (4 against flak jacket)
+shotgun: 
+  wiki: http://wiki.urbandead.com/index.php/Firearms#Shotgun
+  locations: Mall Gun Stores (4%/5%), Armories (2%), Police Departments (1%), Pubs (1%)
+  encumbrance: 6%
+  accuracy: 5% base, 30% basic firearm training, 55% shotgun training, 65% advanced shotgun training
+  damage: 10 (8 againt flak jacket)
+pistol clip: 
+  wiki: http://wiki.urbandead.com/index.php/Firearms#Pistol_Clip
+  locations: Mall Gun Stores (8%/11%), Armories (8%), Police Departments (7%), Junkyards (1%?), Gatehouses (?%)
+  encumbrance: 2% (0% loaded)
+shotgun shell: 
+  wiki: http://wiki.urbandead.com/index.php/Firearms#Shotgun_Shell
+  locations: Mall Gun Stores (7%/11%), Armories (6%), Police Departments (6%), Junkyards (1%?), Street (?%)
+  encumbrance: 2% (0% when loaded)
+glass: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Glass
+  locations: African Glassware Museum, see http://wiki.urbandead.com/index.php/African_Glassware_Museum#African_Glassware_Museums
+  encumbrance: 20%
+painting: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Paintings
+  locations: Painting Museum, see http://wiki.urbandead.com/index.php/Painting_Museum
+  encumbrance: 20%
+pottery: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Pottery
+  locations: Pottery Museum, see http://wiki.urbandead.com/index.php/Pottery_Museum
+  encumbrance: 20%
+sculpture: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Sculptures
+  locations: Sculpture Museum, see http://wiki.urbandead.com/index.php/Sculpture_Museum
+  encumbrance: 20%
+skeletons: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Skeletons
+  locations: Skeleton Museum, see http://wiki.urbandead.com/index.php/Skeleton_Museum
+  encumbrance: 20% (skull 6%)
+stuffed animal: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Stuffed_animals
+  locations: Stuffed Animal Museum, see http://wiki.urbandead.com/index.php/Stuffed_Animal_Museum
+  encumbrance: 20%
+tapestry: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Tapestries
+  locations: Tapestry Museum, see http://wiki.urbandead.com/index.php/Tapestry_Museum
+  encumbrance: 20%
+pumpkin: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Pumpkins
+  locations: Park
+  encumbrance: 20%
+  notes: can be installed inside and outside, requires knife to carve before installing
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+Christmas lights: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Christmas_Lights
+  locations: Mall hardware stores
+  encumbrance: 2%
+  notes: only available in winter
+tinsel: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Tinsel
+  locations: Mall hardware stores
+  encumbrance: 20%
+  notes: only available in winter
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 1
+dead fir tree: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Dead_Fir_Tree
+  locations: Park
+  encumbrance: 20%
+  notes: only available in winter
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+plastic Christmas tree: 
+  wiki: http://wiki.urbandead.com/index.php/Decorative_Items#Plastic_Christmas_Tree
+  locations: Mall Hardware Store
+  encumbrance: 20%
+  notes: only available in winter
+  accuracy: 10% base, 25% hand-to-hand
+  damage: 2
+
