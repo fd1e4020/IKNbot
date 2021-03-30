@@ -23,13 +23,27 @@ import yaml
 #        - user1
 #        - ...
 
+with open('.config.yaml', 'r') as f:
+	try:
+		config = yaml.load(f, Loader=yaml.FullLoader)
+	except Exception as e:
+		sys.exit(e)
+	finally:
+		f.close()
+
+try:
+	TOKEN	= config['token']
+	PREFIX	= config['prefix']
+except:
+	sys.exit('broken .config.yaml')
+
 load_dotenv()
-TOKEN   = os.getenv('DISCORD_TOKEN')
-GUILD   = os.getenv('DISCORD_GUILD')
+#TOKEN   = os.getenv('DISCORD_TOKEN')
+#GUILD   = os.getenv('DISCORD_GUILD')
 ALTNAME = urllib.parse.quote( os.getenv('ALT_NAME') )
 ALTPASS = urllib.parse.quote( os.getenv('ALT_PASS') )
-ALLOWED = os.getenv('ALLOWED_ROLE')
-PREFIX  = os.getenv('COMMAND_PREFIX')
+#ALLOWED = os.getenv('ALLOWED_ROLE')
+#PREFIX  = os.getenv('COMMAND_PREFIX')
 GROUP   = os.getenv('GROUP_NAME')
 URL     = os.getenv('GROUP_URL')
 
@@ -76,13 +90,13 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('You do not have the correct role for this command.')
+        await ctx.send('You failed a check somewhere.')
 
 # TODO ignore commands if sender is the bot (can happen?)
 
-@bot.command(name='ping', help='ping request')
-async def cmd_ping(ctx):
-	await ctx.send('pong')
+#@bot.command(name='ping', help='ping request')
+#async def cmd_ping(ctx):
+#	await ctx.send('pong')
 
 # TODO DRY
 # TODO "paginate" if output is too long
@@ -92,7 +106,7 @@ async def cmd_ping(ctx):
 # TODO once multiple groups are supported, do not default group when DMd
 
 @bot.command(name='active', help='active group members')
-@commands.has_role(ALLOWED)
+#@commands.has_role(ALLOWED)
 async def cmd_active(ctx):
 
 	try:
@@ -134,7 +148,7 @@ async def cmd_active(ctx):
 
 
 @bot.command(name='mia', help='MIA alts')
-@commands.has_role(ALLOWED)
+#@commands.has_role(ALLOWED)
 async def cmd_mia(ctx):
 
 	try:
@@ -172,7 +186,7 @@ async def cmd_mia(ctx):
 
 
 @bot.command(name='group', help='group overview')
-@commands.has_role(ALLOWED)
+#@commands.has_role(ALLOWED)
 async def cmd_group(ctx):
 
 	try:
