@@ -34,18 +34,27 @@ with open('.config.yaml', 'r') as f:
 try:
 	TOKEN	= config['token']
 	PREFIX	= config['prefix']
+	groups	= config['groups']
+
+	# hard-code before addding full support for multiple groups
+	tkn = groups['tkn']
+	ALTNAME = tkn['alt_name']
+	ALTPASS = tkn['alt_pass']
+	GROUP 	= tkn['name']
+	URL 	= tkn['url']
+	COLOR	= tkn['color']
 except:
 	sys.exit('broken .config.yaml')
 
-load_dotenv()
+#load_dotenv()
 #TOKEN   = os.getenv('DISCORD_TOKEN')
 #GUILD   = os.getenv('DISCORD_GUILD')
-ALTNAME = urllib.parse.quote( os.getenv('ALT_NAME') )
-ALTPASS = urllib.parse.quote( os.getenv('ALT_PASS') )
+#ALTNAME = urllib.parse.quote( os.getenv('ALT_NAME') )
+#ALTPASS = urllib.parse.quote( os.getenv('ALT_PASS') )
 #ALLOWED = os.getenv('ALLOWED_ROLE')
 #PREFIX  = os.getenv('COMMAND_PREFIX')
-GROUP   = os.getenv('GROUP_NAME')
-URL     = os.getenv('GROUP_URL')
+#GROUP   = os.getenv('GROUP_NAME')
+#URL     = os.getenv('GROUP_URL')
 
 intents = discord.Intents.all()
 #client = discord.Client(intents=intents)
@@ -124,7 +133,7 @@ async def cmd_active(ctx):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"con1")]'
+	path = '//a[contains(@class,"' + COLOR +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('Please have the bot herder check if the contact list is empty.')
@@ -164,7 +173,7 @@ async def cmd_mia(ctx):
 
 	msg = ''
 
-	path = '//a[contains(@class,"con1")]/strike'
+	path = '//a[contains(@class,"' + COLOR +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('No MIAs found.')
@@ -204,7 +213,7 @@ async def cmd_group(ctx):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"con1")]'
+	path = '//a[contains(@class,"' + COLOR +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('Please have the bot herder check if the contact list is empty.')
@@ -217,7 +226,7 @@ async def cmd_group(ctx):
 
 	mia = ''
 
-	path = '//a[contains(@class,"con1")]/strike'
+	path = '//a[contains(@class,"' + COLOR +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) != 0:
 		for i in range(0,len(r)):
