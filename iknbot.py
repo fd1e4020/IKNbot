@@ -255,7 +255,19 @@ async def cmd_item(ctx, *args):
 		except:
 			pass
 
-
 	await ctx.send(embed=embed)
+
+@bot.command(name='itemlist', help='items I Know Nothing about')
+async def cmd_itemlist(ctx, *args):
+
+	ikn = '```\nknown items:\n\n'
+	for i in items:
+		ikn += i + '\n'
+	ikn += '\nabbreviatons:\n\n'
+	for k, v in abbrevs.items():
+		ikn += k + ': ' + v + '\n'
+	ikn += '```'
+
+	await ctx.send(ikn)
 
 bot.run(TOKEN)
