@@ -229,6 +229,8 @@ async def cmd_item(ctx, *args):
 	# don't require quoting
 	arg = ' '.join(args)
 
+	fields = [ "locations", "encumbrance", "accuracy", "damage", "notes"]
+
 	try:
 		arg = abbrevs[arg]
 	except:
@@ -240,6 +242,20 @@ async def cmd_item(ctx, *args):
 		await ctx.send(arg + ' not found')
 		return
 
-	await ctx.send(arg + ' found')
+	embed  =discord.Embed(
+		title=arg,
+		url=item['wiki'],
+		description="Here's what I know about " + arg + ":",
+		color=0xFF5733)
+
+	for f in fields:
+		try:
+			val = item[f]
+			embed.add_field(name=f, value=val, inline=False)
+		except:
+			pass
+
+
+	await ctx.send(embed=embed)
 
 bot.run(TOKEN)
