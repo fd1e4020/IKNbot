@@ -58,15 +58,10 @@ for altname, altpass in config['alts'].items():
 
 	url = 'http://urbandead.com/map.cgi?username=' + altname + '&password=' + altpass
 	try:
-		print('opening session for',altname)
 		sessions[altname] = requests.session()
 		r = sessions[altname].get(url)
 	except Exception as e:
 		raise SystemExit(e)
-	#if r.status_code != 200:
-	#	errmsg = 'failed to establish session, status ' + str(r.status_code)
-	#	sys.exit(errmsg)
-
 
 with open('items.yaml', 'r') as f:
 	try:
@@ -92,6 +87,8 @@ async def on_ready():
 	# Setting `Playing ` status
 	await bot.change_presence(activity=discord.Game(name=PREFIX+'help'))
 
+# currently not needed
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
@@ -105,12 +102,20 @@ async def on_command_error(ctx, error):
 
 @bot.command(name='active', help='active group members')
 #@commands.has_role(ALLOWED)
-async def cmd_active(ctx, group="tkn"):
+async def cmd_active(ctx, group_arg="tkn"):
 
-	print(' in active, group is ',group)
-	altname = groups[group]['alt']
-	print('in active, alt is',altname)
+	try:
+		group = groups[group_arg]
+	except:
+		await ctx.send("I don't know about that group")
+		return
+
+	altname = group['alt']
 	session = sessions[altname]
+
+	GROUP 	= group['name']
+	URL 	= group['url']
+	COLOR	= group['color']
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
