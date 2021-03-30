@@ -26,6 +26,7 @@ import yaml
 with open('.config.yaml', 'r') as f:
 	try:
 		config = yaml.load(f, Loader=yaml.FullLoader)
+		print(config)
 	except Exception as e:
 		sys.exit(e)
 	finally:
@@ -38,8 +39,8 @@ try:
 
 	# hard-code before addding full support for multiple groups
 	tkn = groups['tkn']
-	ALTNAME = tkn['alt_name']
-	ALTPASS = tkn['alt_pass']
+	ALTNAME = tkn['alt']
+	ALTPASS = config['alts'][ALTNAME]
 	GROUP 	= tkn['name']
 	URL 	= tkn['url']
 	COLOR	= tkn['color']
