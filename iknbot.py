@@ -36,14 +36,6 @@ try:
 	PREFIX	= config['prefix']
 	groups	= config['groups']
 
-	# hard-code before addding full support for multiple groups
-	tkn = groups['tkn']
-	ALTNAME = tkn['alt']
-	ALTPASS = config['alts'][ALTNAME]
-	GROUP 	= tkn['name']
-	URL 	= tkn['url']
-	COLOR	= tkn['color']
-
 except:
 	sys.exit('broken .config.yaml')
 
@@ -94,11 +86,19 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You failed a check somewhere.')
 
-# TODO DRY
-# TODO "paginate" if output is too long
-# TODO check for empty contact list
+# TODO *** DRY DRY DRY ***
+#	The %active, %mia, and %groups commands need some
+#	serious refactoring
 
-# TODO once multiple groups are supported, do not default group when DMd
+# TODO "paginate" if output is too long
+
+
+@bot.command(name='listgroups', help='list currently supported groups')
+#@commands.has_role(ALLOWED)
+async def cmd_listgroups(ctx):
+
+	msg = '```\nsupported groups:\n\n' + '\n'.join(groups) + '\n```'
+	await ctx.send(msg)
 
 @bot.command(name='active', help='active group members')
 #@commands.has_role(ALLOWED)
@@ -107,7 +107,7 @@ async def cmd_active(ctx, group_arg="tkn"):
 	try:
 		group = groups[group_arg]
 	except:
-		await ctx.send("I don't know about that group")
+		await ctx.send("I don't know that group")
 		return
 
 	altname = group['alt']
@@ -138,15 +138,16 @@ async def cmd_active(ctx, group_arg="tkn"):
 		await cts.send('Please have the bot herder check if the contact list is empty.')
 		return
 
+	# TODO can use range(len(r))?
 	for i in range(0,len(r)):
 		if r[i].text != None:
 			msg += r[i].text+'\n'
 
 	if msg == '':
-		await ctx.send('Sorry, no active players found.')
+		await ctx.send('Sorry, no active players of that group found.')
 		return
 
-	embed  =discord.Embed(
+	embed = discord.Embed(
 		title=GROUP,
 		url=URL,
 		description=msg,
@@ -157,7 +158,20 @@ async def cmd_active(ctx, group_arg="tkn"):
 
 @bot.command(name='mia', help='MIA alts')
 #@commands.has_role(ALLOWED)
-async def cmd_mia(ctx):
+async def cmd_mia(ctx, group_arg="tkn"):
+
+	try:
+		group = groups[group_arg]
+	except:
+		await ctx.send("I don't know that group")
+		return
+
+	altname = group['alt']
+	session = sessions[altname]
+
+	GROUP 	= group['name']
+	URL 	= group['url']
+	COLOR	= group['color']
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -175,7 +189,7 @@ async def cmd_mia(ctx):
 	path = '//a[contains(@class,"' + COLOR +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) == 0:
-		await cts.send('No MIAs found.')
+		await cts.send('All members of this group are active.')
 		return
 
 	for i in range(0,len(r)):
@@ -183,7 +197,7 @@ async def cmd_mia(ctx):
 		if r[i].text != None:
 			msg += r[i].text+'\n'
 
-	embed  =discord.Embed(
+	embed = discord.Embed(
 		title=GROUP,
 		url=URL,
 		description=msg,
@@ -195,7 +209,20 @@ async def cmd_mia(ctx):
 
 @bot.command(name='group', help='group overview')
 #@commands.has_role(ALLOWED)
-async def cmd_group(ctx):
+async def cmd_group(ctx, group_arg="tkn"):
+
+	try:
+		group = groups[group_arg]
+	except:
+		await ctx.send("I don't know that group")
+		return
+
+	altname = group['alt']
+	session = sessions[altname]
+
+	GROUP 	= group['name']
+	URL 	= group['url']
+	COLOR	= group['color']
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -235,14 +262,16 @@ async def cmd_group(ctx):
 
 	# build the embed
 
-	embed  =discord.Embed(
+	embed = discord.Embed(
 		title=GROUP,
 		url=URL,
 		description="Group overview",
 		color=0xFF5733)
 
-	embed.add_field(name="Active", value=active, inline=True)
-	embed.add_field(name="MIA", value=mia, inline=True)
+	if active != '':
+		embed.add_field(name="Active", value=active, inline=True)
+	if mia != '':
+		embed.add_field(name="MIA", value=mia, inline=True)
 
 	await ctx.send(embed=embed)
 
@@ -279,8 +308,8 @@ async def cmd_item(ctx, *args):
 
 	await ctx.send(embed=embed)
 
-@bot.command(name='itemlist', help='items I Know Nothing about')
-async def cmd_itemlist(ctx, *args):
+@bot.command(name='listitems', help='items I Know Nothing about')
+async def cmd_listitems(ctx, *args):
 
 	ikn = '```\nknown items:\n\n'
 	for i in items:
