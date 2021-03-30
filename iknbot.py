@@ -227,14 +227,19 @@ async def cmd_group(ctx):
 @bot.command(name='item', help='item quick-info')
 async def cmd_item(ctx, *args):
 	# don't require quoting
-	item = ' '.join(args)
+	arg = ' '.join(args)
 
-	print('arg = ',item)
 	try:
-		item = abbrevs[item]
-		print('abbrev = ', item)
+		arg = abbrevs[arg]
 	except:
 		pass
-	await ctx.send(item)
+
+	try:
+		item = items[arg]
+	except:
+		await ctx.send(arg + ' not found')
+		return
+
+	await ctx.send(arg + ' found')
 
 bot.run(TOKEN)
