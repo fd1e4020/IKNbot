@@ -23,31 +23,37 @@ import yaml
 #        - user1
 #        - ...
 
-load_dotenv()
-TOKEN   = os.getenv('DISCORD_TOKEN')
-GUILD   = os.getenv('DISCORD_GUILD')
-ALTNAME = urllib.parse.quote( os.getenv('ALT_NAME') )
-ALTPASS = urllib.parse.quote( os.getenv('ALT_PASS') )
-ALLOWED = os.getenv('ALLOWED_ROLE')
-PREFIX  = os.getenv('COMMAND_PREFIX')
-GROUP   = os.getenv('GROUP_NAME')
-URL     = os.getenv('GROUP_URL')
+with open('.config.yaml', 'r') as f:
+	try:
+		config = yaml.load(f, Loader=yaml.FullLoader)
+	except Exception as e:
+		sys.exit(e)
+	finally:
+		f.close()
+
+try:
+	TOKEN	= config['token']
+	PREFIX	= config['prefix']
+	groups	= config['groups']
+
+except:
+	sys.exit('broken .config.yaml')
 
 intents = discord.Intents.all()
 #client = discord.Client(intents=intents)
 
 # TODO proper error handling for all web requests
 
-url = 'http://urbandead.com/map.cgi?username=' + ALTNAME + '&password=' + ALTPASS
-try:
-	session = requests.session()
-	r = session.get(url)
-except Exception as e:
-    raise SystemExit(e)
-#if r.status_code != 200:
-#	errmsg = 'failed to establish session, status ' + str(r.status_code)
-#	sys.exit(errmsg)
+sessions = {}
 
+for altname, altpass in config['alts'].items():
+
+	url = 'http://urbandead.com/map.cgi?username=' + altname + '&password=' + altpass
+	try:
+		sessions[altname] = requests.session()
+		r = sessions[altname].get(url)
+	except Exception as e:
+		raise SystemExit(e)
 
 with open('items.yaml', 'r') as f:
 	try:
@@ -73,27 +79,43 @@ async def on_ready():
 	# Setting `Playing ` status
 	await bot.change_presence(activity=discord.Game(name=PREFIX+'help'))
 
+# currently not needed
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
-        await ctx.send('You do not have the correct role for this command.')
+        await ctx.send('You failed a check somewhere.')
 
-# TODO ignore commands if sender is the bot (can happen?)
+# TODO *** DRY DRY DRY ***
+#	The %active, %mia, and %groups commands need some
+#	serious refactoring
 
-@bot.command(name='ping', help='ping request')
-async def cmd_ping(ctx):
-	await ctx.send('pong')
-
-# TODO DRY
 # TODO "paginate" if output is too long
-# TODO check for empty contact list
 
-# TODO use predicate function to authenticate from DM
-# TODO once multiple groups are supported, do not default group when DMd
+
+@bot.command(name='listgroups', help='list currently supported groups')
+#@commands.has_role(ALLOWED)
+async def cmd_listgroups(ctx):
+
+	msg = '```\nsupported groups:\n\n' + '\n'.join(groups) + '\n```'
+	await ctx.send(msg)
 
 @bot.command(name='active', help='active group members')
-@commands.has_role(ALLOWED)
-async def cmd_active(ctx):
+#@commands.has_role(ALLOWED)
+async def cmd_active(ctx, group_arg="tkn"):
+
+	try:
+		group = groups[group_arg]
+	except:
+		await ctx.send("I don't know that group")
+		return
+
+	altname = group['alt']
+	session = sessions[altname]
+
+	GROUP 	= group['name']
+	URL 	= group['url']
+	COLOR	= group['color']
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -110,21 +132,22 @@ async def cmd_active(ctx):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"con1")]'
+	path = '//a[contains(@class,"' + COLOR +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('Please have the bot herder check if the contact list is empty.')
 		return
 
+	# TODO can use range(len(r))?
 	for i in range(0,len(r)):
 		if r[i].text != None:
 			msg += r[i].text+'\n'
 
 	if msg == '':
-		await ctx.send('Sorry, no active players found.')
+		await ctx.send('Sorry, no active players of that group found.')
 		return
 
-	embed  =discord.Embed(
+	embed = discord.Embed(
 		title=GROUP,
 		url=URL,
 		description=msg,
@@ -134,8 +157,21 @@ async def cmd_active(ctx):
 
 
 @bot.command(name='mia', help='MIA alts')
-@commands.has_role(ALLOWED)
-async def cmd_mia(ctx):
+#@commands.has_role(ALLOWED)
+async def cmd_mia(ctx, group_arg="tkn"):
+
+	try:
+		group = groups[group_arg]
+	except:
+		await ctx.send("I don't know that group")
+		return
+
+	altname = group['alt']
+	session = sessions[altname]
+
+	GROUP 	= group['name']
+	URL 	= group['url']
+	COLOR	= group['color']
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -150,10 +186,10 @@ async def cmd_mia(ctx):
 
 	msg = ''
 
-	path = '//a[contains(@class,"con1")]/strike'
+	path = '//a[contains(@class,"' + COLOR +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) == 0:
-		await cts.send('No MIAs found.')
+		await cts.send('All members of this group are active.')
 		return
 
 	for i in range(0,len(r)):
@@ -161,7 +197,7 @@ async def cmd_mia(ctx):
 		if r[i].text != None:
 			msg += r[i].text+'\n'
 
-	embed  =discord.Embed(
+	embed = discord.Embed(
 		title=GROUP,
 		url=URL,
 		description=msg,
@@ -172,8 +208,21 @@ async def cmd_mia(ctx):
 
 
 @bot.command(name='group', help='group overview')
-@commands.has_role(ALLOWED)
-async def cmd_group(ctx):
+#@commands.has_role(ALLOWED)
+async def cmd_group(ctx, group_arg="tkn"):
+
+	try:
+		group = groups[group_arg]
+	except:
+		await ctx.send("I don't know that group")
+		return
+
+	altname = group['alt']
+	session = sessions[altname]
+
+	GROUP 	= group['name']
+	URL 	= group['url']
+	COLOR	= group['color']
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -190,7 +239,7 @@ async def cmd_group(ctx):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"con1")]'
+	path = '//a[contains(@class,"' + COLOR +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('Please have the bot herder check if the contact list is empty.')
@@ -203,7 +252,7 @@ async def cmd_group(ctx):
 
 	mia = ''
 
-	path = '//a[contains(@class,"con1")]/strike'
+	path = '//a[contains(@class,"' + COLOR +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) != 0:
 		for i in range(0,len(r)):
@@ -213,14 +262,16 @@ async def cmd_group(ctx):
 
 	# build the embed
 
-	embed  =discord.Embed(
+	embed = discord.Embed(
 		title=GROUP,
 		url=URL,
 		description="Group overview",
 		color=0xFF5733)
 
-	embed.add_field(name="Active", value=active, inline=True)
-	embed.add_field(name="MIA", value=mia, inline=True)
+	if active != '':
+		embed.add_field(name="Active", value=active, inline=True)
+	if mia != '':
+		embed.add_field(name="MIA", value=mia, inline=True)
 
 	await ctx.send(embed=embed)
 
@@ -257,8 +308,8 @@ async def cmd_item(ctx, *args):
 
 	await ctx.send(embed=embed)
 
-@bot.command(name='itemlist', help='items I Know Nothing about')
-async def cmd_itemlist(ctx, *args):
+@bot.command(name='listitems', help='items I Know Nothing about')
+async def cmd_listitems(ctx, *args):
 
 	ikn = '```\nknown items:\n\n'
 	for i in items:
