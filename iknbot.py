@@ -26,7 +26,6 @@ import yaml
 with open('.config.yaml', 'r') as f:
 	try:
 		config = yaml.load(f, Loader=yaml.FullLoader)
-		print(config)
 	except Exception as e:
 		sys.exit(e)
 	finally:
@@ -44,33 +43,29 @@ try:
 	GROUP 	= tkn['name']
 	URL 	= tkn['url']
 	COLOR	= tkn['color']
+
 except:
 	sys.exit('broken .config.yaml')
-
-#load_dotenv()
-#TOKEN   = os.getenv('DISCORD_TOKEN')
-#GUILD   = os.getenv('DISCORD_GUILD')
-#ALTNAME = urllib.parse.quote( os.getenv('ALT_NAME') )
-#ALTPASS = urllib.parse.quote( os.getenv('ALT_PASS') )
-#ALLOWED = os.getenv('ALLOWED_ROLE')
-#PREFIX  = os.getenv('COMMAND_PREFIX')
-#GROUP   = os.getenv('GROUP_NAME')
-#URL     = os.getenv('GROUP_URL')
 
 intents = discord.Intents.all()
 #client = discord.Client(intents=intents)
 
 # TODO proper error handling for all web requests
 
-url = 'http://urbandead.com/map.cgi?username=' + ALTNAME + '&password=' + ALTPASS
-try:
-	session = requests.session()
-	r = session.get(url)
-except Exception as e:
-    raise SystemExit(e)
-#if r.status_code != 200:
-#	errmsg = 'failed to establish session, status ' + str(r.status_code)
-#	sys.exit(errmsg)
+sessions = {}
+
+for altname, altpass in config['alts'].items():
+
+	url = 'http://urbandead.com/map.cgi?username=' + altname + '&password=' + altpass
+	try:
+		print('opening session for',altname)
+		sessions[altname] = requests.session()
+		r = sessions[altname].get(url)
+	except Exception as e:
+		raise SystemExit(e)
+	#if r.status_code != 200:
+	#	errmsg = 'failed to establish session, status ' + str(r.status_code)
+	#	sys.exit(errmsg)
 
 
 with open('items.yaml', 'r') as f:
@@ -102,22 +97,20 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You failed a check somewhere.')
 
-# TODO ignore commands if sender is the bot (can happen?)
-
-#@bot.command(name='ping', help='ping request')
-#async def cmd_ping(ctx):
-#	await ctx.send('pong')
-
 # TODO DRY
 # TODO "paginate" if output is too long
 # TODO check for empty contact list
 
-# TODO use predicate function to authenticate from DM
 # TODO once multiple groups are supported, do not default group when DMd
 
 @bot.command(name='active', help='active group members')
 #@commands.has_role(ALLOWED)
-async def cmd_active(ctx):
+async def cmd_active(ctx, group="tkn"):
+
+	print(' in active, group is ',group)
+	altname = groups[group]['alt']
+	print('in active, alt is',altname)
+	session = sessions[altname]
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
