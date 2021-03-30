@@ -228,6 +228,13 @@ async def cmd_group(ctx):
 async def cmd_item(ctx, *args):
 	# don't require quoting
 	item = ' '.join(args)
+
+	print('arg = ',item)
+	try:
+		item = abbrevs[item]
+		print('abbrev = ', item)
+	except:
+		pass
 	await ctx.send(item)
 
 bot.run(TOKEN)
