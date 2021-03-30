@@ -1,0 +1,44 @@
+---
+token: 'Discord-token-goes-here'
+# bot command prefix
+prefix: '%'
+# alts used for MIA tracking
+alts:
+  'alt1': 'password1'
+  'alt2': 'password2'
+groups:
+  # this the parameter for %active and friends
+  group1:
+    # for this group, use alt1 as tracking alt
+    alt: 'alt1'
+    # title and URL for Discord embed
+    name: 'name of group 1 goes here'
+    url: 'URL of group 1 goes here'
+    # select CSS color class
+    #   pick color of choice
+    #     (enable/disable alts)
+    #   and/or support multiple groups per tracking alt
+    # con1 is colored grey
+    # con2 is colored red
+    # con3 is colored orange
+    # con4 is colored yellow
+    # con5 is colored green
+    # con6 is colored blue
+    # con7 is colored purple
+    # con8 is colored black
+    # con9 is colored white
+    # con10 is an ignored contact
+    color: 'con1'
+  # everybody below here is for future use
+  group2:
+    alt: 'alt2'
+    name: 'name of group 2 goes here'
+    url: 'URL of group 2 goes here'
+    # con1 is colored green
+    color: 'con5'
+  group3:
+    alt: 'alt1'
+    name: 'name of group 3 goes here'
+    url: 'URL of group 3 goes here'
+    # con4 is colored yellow
+    color: 'con4'
