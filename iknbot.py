@@ -116,19 +116,15 @@ async def cmd_active(ctx, group_arg="tkn"):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"' + group['color'] +'")]'
+	path = '//a[contains(@class,"' + group['color'] +'") and not(strike)]'
 	r = tree.xpath(path)
+
 	if len(r) == 0:
-		await cts.send('Please have the bot herder check if the contact list is empty.')
+		await ctx.send('No active members of that group found.')
 		return
 
 	for i in range(len(r)):
-		if r[i].text != None:
-			msg += r[i].text+'\n'
-
-	if msg == '':
-		await ctx.send('Sorry, no active members of that group found.')
-		return
+		msg += r[i].text+'\n'
 
 	embed = discord.Embed(
 		title=group['name'],
@@ -163,7 +159,7 @@ async def cmd_mia(ctx, group_arg="tkn"):
 	path = '//a[contains(@class,"' + group['color'] +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) == 0:
-		await cts.send('All members of this group are active.')
+		await ctx.send('All members of this group are active.')
 		return
 
 	for i in range(len(r)):
@@ -192,7 +188,6 @@ async def cmd_group(ctx, group_arg="tkn"):
 
 	session = sessions[group['alt']]
 
-
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
 	except Exception as e:
@@ -201,32 +196,23 @@ async def cmd_group(ctx, group_arg="tkn"):
 		
 	tree = etree.HTML(r.text)
 
-	active = ''
+	active = []
+	mia = []
 
-	# the path below catches both active and MIA alts
-	# if nothing is found the contact list may be empty
 	path = '//a[contains(@class,"' + group['color'] +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
-		await cts.send('Please have the bot herder check if the contact list is empty.')
+		await ctx.send('No members found.')
 		return
 
-	# TODO if r[i].text is None, do an xpath to the strike element instead
 	for i in range(len(r)):
-		if r[i].text != None:
-			active += r[i].text+'\n'
-
-	mia = ''
-
-	path = '//a[contains(@class,"' + group['color'] +'")]/strike'
-	r = tree.xpath(path)
-	if len(r) != 0:
-		for i in range(len(r)):
-			# TODO test for "can't happen" instead?
-			if r[i].text != None:
-				mia += r[i].text+'\n'
-
-	# build the embed
+		name = r[i].text
+		if name == None:
+			name = r[i].getchildren()[0].text
+			assert name != None, "name of MIA alt not found"
+			mia += [name]
+		else:
+			active += [name]
 
 	embed = discord.Embed(
 		title=group['name'],
@@ -235,9 +221,9 @@ async def cmd_group(ctx, group_arg="tkn"):
 		color=0xFF5733)
 
 	if active != '':
-		embed.add_field(name="Active", value=active, inline=True)
+		embed.add_field(name="Active", value='\n'.join(active), inline=True)
 	if mia != '':
-		embed.add_field(name="MIA", value=mia, inline=True)
+		embed.add_field(name="MIA", value='\n'.join(mia), inline=True)
 
 	await ctx.send(embed=embed)
 
