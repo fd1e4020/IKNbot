@@ -10,39 +10,36 @@ from lxml import etree
 import sys
 import yaml
 
-# TODO for future upgrades, use .config.yaml instead
-# in particular:
 #
-#  groups:
-#    - GROUP_NAME_1:
-#      alt_name: ALT_NAME
-#      alt_pass: ALT_PASS
-#      group_color: COLOR_NUMBER for group
-#      auth_role: AUTHORIZED role
-#      auth_users:
-#        - user1
-#        - ...
+# utility functions
+#
 
-with open('.config.yaml', 'r') as f:
-	try:
-		config = yaml.load(f, Loader=yaml.FullLoader)
-	except Exception as e:
-		sys.exit(e)
-	finally:
-		f.close()
+def load_yaml(filename, mode):
+
+	with open(filename, mode) as f:
+		try:
+			data = yaml.load(f, Loader=yaml.FullLoader)
+		except Exception as e:
+			sys.exit(e)
+		finally:
+			f.close()
+	return data
+
+#
+# load config, setup
+#
+
+config = load_yaml('.config.yaml', 'r')
 
 try:
 	TOKEN	= config['token']
 	PREFIX	= config['prefix']
 	groups	= config['groups']
-
 except:
 	sys.exit('broken .config.yaml')
 
-intents = discord.Intents.all()
-#client = discord.Client(intents=intents)
 
-# TODO proper error handling for all web requests
+# create sessions and login
 
 sessions = {}
 
@@ -55,22 +52,16 @@ for altname, altpass in config['alts'].items():
 	except Exception as e:
 		raise SystemExit(e)
 
-with open('items.yaml', 'r') as f:
-	try:
-		items = yaml.load(f, Loader=yaml.FullLoader)
-	except Exception as e:
-		sys.exit(e)
-	finally:
-		f.close()
+# load item data
+items = load_yaml('items.yaml', 'r')
+abbrevs = load_yaml('item-abbrev.yaml', 'r')
 
-with open('item-abbrev.yaml', 'r') as f:
-	try:
-		abbrevs = yaml.load(f, Loader=yaml.FullLoader)
-	except Exception as e:
-		sys.exit(e)
-	finally:
-		f.close()
+intents = discord.Intents.all()
+#client = discord.Client(intents=intents)
 
+#
+# end of setup
+#
 
 bot = commands.Bot(command_prefix=PREFIX)
 
@@ -86,44 +77,31 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You failed a check somewhere.')
 
-# TODO *** DRY DRY DRY ***
-#	The %active, %mia, and %groups commands need some
-#	serious refactoring
-
-# TODO "paginate" if output is too long
-
+#
+# group-related commands
+#
 
 @bot.command(name='listgroups', help='list currently supported groups')
 #@commands.has_role(ALLOWED)
 async def cmd_listgroups(ctx):
 
-	msg = '```\nsupported groups:\n\n' + '\n'.join(groups) + '\n```'
-	await ctx.send(msg)
-
+	fmt = '```\nsupported groups:\n\n{}\n```'
+	await ctx.send(fmt.format( '\n'.join(groups) ))
 @bot.command(name='active', help='active group members')
 #@commands.has_role(ALLOWED)
 async def cmd_active(ctx, group_arg="tkn"):
 
-	try:
-		group = groups[group_arg]
-	except:
-		await ctx.send("I don't know that group")
+	group = groups.get(group_arg)
+	if group is None:
+		await ctx.send("I don't know that group.")
 		return
 
-	altname = group['alt']
-	session = sessions[altname]
-
-	GROUP 	= group['name']
-	URL 	= group['url']
-	COLOR	= group['color']
+	session = sessions[group['alt']]
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
-	except requests.exceptions.RequestException as e:
-		await ctx.send('Connection error to urbandead.com')
-		return
-	if r.status_code != 200:
-		await ctx.send('Bad status code while retrieving the contacts')
+	except Exception as e:
+		await ctx.send('Connection error to urbandead.com', e)
 		return
 		
 	tree = etree.HTML(r.text)
@@ -132,24 +110,19 @@ async def cmd_active(ctx, group_arg="tkn"):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"' + COLOR +'")]'
+	path = '//a[contains(@class,"' + group['color'] +'") and not(strike)]'
 	r = tree.xpath(path)
+
 	if len(r) == 0:
-		await cts.send('Please have the bot herder check if the contact list is empty.')
+		await ctx.send('No active members of that group found.')
 		return
 
-	# TODO can use range(len(r))?
-	for i in range(0,len(r)):
-		if r[i].text != None:
-			msg += r[i].text+'\n'
-
-	if msg == '':
-		await ctx.send('Sorry, no active players of that group found.')
-		return
+	for i in range(len(r)):
+		msg += r[i].text+'\n'
 
 	embed = discord.Embed(
-		title=GROUP,
-		url=URL,
+		title=group['name'],
+		url=group['url'],
 		description=msg,
 		color=0xFF5733)
 
@@ -160,46 +133,37 @@ async def cmd_active(ctx, group_arg="tkn"):
 #@commands.has_role(ALLOWED)
 async def cmd_mia(ctx, group_arg="tkn"):
 
-	try:
-		group = groups[group_arg]
-	except:
-		await ctx.send("I don't know that group")
+	group = groups.get(group_arg)
+	if group is None:
+		await ctx.send("I don't know that group.")
 		return
 
-	altname = group['alt']
-	session = sessions[altname]
-
-	GROUP 	= group['name']
-	URL 	= group['url']
-	COLOR	= group['color']
+	session = sessions[group['alt']]
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
-	except requests.exceptions.RequestException as e:
-		await ctx.send('Connection error to urbandead.com')
-		return
-	if r.status_code != 200:
-		await ctx.send('Bad status code while retrieving the contacts')
+	except Exception as e:
+		await ctx.send('Connection error to urbandead.com', e)
 		return
 		
 	tree = etree.HTML(r.text)
 
 	msg = ''
 
-	path = '//a[contains(@class,"' + COLOR +'")]/strike'
+	path = '//a[contains(@class,"' + group['color'] +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) == 0:
-		await cts.send('All members of this group are active.')
+		await ctx.send('All members of this group are active.')
 		return
 
-	for i in range(0,len(r)):
+	for i in range(len(r)):
 		# TODO test for "can't happen" instead?
 		if r[i].text != None:
 			msg += r[i].text+'\n'
 
 	embed = discord.Embed(
-		title=GROUP,
-		url=URL,
+		title=group['name'],
+		url=group['url'],
 		description=msg,
 		color=0xFF5733)
 
@@ -211,85 +175,67 @@ async def cmd_mia(ctx, group_arg="tkn"):
 #@commands.has_role(ALLOWED)
 async def cmd_group(ctx, group_arg="tkn"):
 
-	try:
-		group = groups[group_arg]
-	except:
-		await ctx.send("I don't know that group")
+	group = groups.get(group_arg)
+	if group is None:
+		await ctx.send("I don't know that group.")
 		return
 
-	altname = group['alt']
-	session = sessions[altname]
-
-	GROUP 	= group['name']
-	URL 	= group['url']
-	COLOR	= group['color']
+	session = sessions[group['alt']]
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
-	except requests.exceptions.RequestException as e:
-		await ctx.send('Connection error to urbandead.com')
-		return
-	if r.status_code != 200:
-		await ctx.send('Bad status code while retrieving the contacts')
+	except Exception as e:
+		await ctx.send('Connection error to urbandead.com'. e)
 		return
 		
 	tree = etree.HTML(r.text)
 
-	active = ''
+	active = []
+	mia = []
 
-	# the path below catches both active and MIA alts
-	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"' + COLOR +'")]'
+	path = '//a[contains(@class,"' + group['color'] +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
-		await cts.send('Please have the bot herder check if the contact list is empty.')
+		await ctx.send('No members found.')
 		return
 
-	# TODO if r[i].text is None, do an xpath to the strike element instead
-	for i in range(0,len(r)):
-		if r[i].text != None:
-			active += r[i].text+'\n'
-
-	mia = ''
-
-	path = '//a[contains(@class,"' + COLOR +'")]/strike'
-	r = tree.xpath(path)
-	if len(r) != 0:
-		for i in range(0,len(r)):
-			# TODO test for "can't happen" instead?
-			if r[i].text != None:
-				mia += r[i].text+'\n'
-
-	# build the embed
+	for i in range(len(r)):
+		name = r[i].text
+		if name == None:
+			name = r[i].getchildren()[0].text
+			assert name != None, "name of MIA alt not found"
+			mia += [name]
+		else:
+			active += [name]
 
 	embed = discord.Embed(
-		title=GROUP,
-		url=URL,
+		title=group['name'],
+		url=group['url'],
 		description="Group overview",
 		color=0xFF5733)
 
-	if active != '':
-		embed.add_field(name="Active", value=active, inline=True)
-	if mia != '':
-		embed.add_field(name="MIA", value=mia, inline=True)
+	if len(active) != 0:
+		embed.add_field(name="Active", value='\n'.join(active), inline=True)
+	if len(mia) != 0:
+		embed.add_field(name="MIA", value='\n'.join(mia), inline=True)
 
 	await ctx.send(embed=embed)
 
+#
+# item-related commands
+#
+
 @bot.command(name='item', help='item quick-info')
 async def cmd_item(ctx, *args):
-	# don't require quoting
+
 	arg = ' '.join(args)
 
 	fields = [ "locations", "encumbrance", "accuracy", "damage", "notes"]
 
-	try:
-		arg = abbrevs[arg]
-	except:
-		pass
+	arg = abbrevs.get(arg,arg)
 
-	try:
-		item = items[arg]
-	except:
+	item = items.get(arg)
+	if item == None:
 		await ctx.send(arg + ' not found')
 		return
 
@@ -300,25 +246,35 @@ async def cmd_item(ctx, *args):
 		color=0xFF5733)
 
 	for f in fields:
-		try:
-			val = item[f]
+		val = item.get(f)
+		if val != None:
 			embed.add_field(name=f, value=val, inline=False)
-		except:
-			pass
 
 	await ctx.send(embed=embed)
 
+
 @bot.command(name='listitems', help='items I Know Nothing about')
-async def cmd_listitems(ctx, *args):
+async def cmd_listitems(ctx):
 
-	ikn = '```\nknown items:\n\n'
-	for i in items:
-		ikn += i + '\n'
-	ikn += '\nabbreviatons:\n\n'
-	for k, v in abbrevs.items():
-		ikn += k + ': ' + v + '\n'
-	ikn += '```'
+	msg_items = '\n'.join(items)
+	msg_abbrev = '\n'.join('{}: {}'.format(key, value) for key, value in abbrevs.items())
 
-	await ctx.send(ikn)
+	fmt = '''
+```
+known items:
+
+{}
+
+abbreviations:
+
+{}
+```
+'''
+
+	await ctx.send(fmt.format(msg_items, msg_abbrev))
+
+#
+# *** actually run the bot ***
+#
 
 bot.run(TOKEN)
