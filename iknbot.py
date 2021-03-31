@@ -102,12 +102,7 @@ async def cmd_active(ctx, group_arg="tkn"):
 		await ctx.send("I don't know that group.")
 		return
 
-	altname = group['alt']
-	session = sessions[altname]
-
-	GROUP 	= group['name']
-	URL 	= group['url']
-	COLOR	= group['color']
+	session = sessions[group['alt']]
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -121,7 +116,7 @@ async def cmd_active(ctx, group_arg="tkn"):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"' + COLOR +'")]'
+	path = '//a[contains(@class,"' + group['color'] +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('Please have the bot herder check if the contact list is empty.')
@@ -137,8 +132,8 @@ async def cmd_active(ctx, group_arg="tkn"):
 		return
 
 	embed = discord.Embed(
-		title=GROUP,
-		url=URL,
+		title=group['name'],
+		url=group['url'],
 		description=msg,
 		color=0xFF5733)
 
@@ -154,12 +149,7 @@ async def cmd_mia(ctx, group_arg="tkn"):
 		await ctx.send("I don't know that group.")
 		return
 
-	altname = group['alt']
-	session = sessions[altname]
-
-	GROUP 	= group['name']
-	URL 	= group['url']
-	COLOR	= group['color']
+	session = sessions[group['alt']]
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -171,7 +161,7 @@ async def cmd_mia(ctx, group_arg="tkn"):
 
 	msg = ''
 
-	path = '//a[contains(@class,"' + COLOR +'")]/strike'
+	path = '//a[contains(@class,"' + group['color'] +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('All members of this group are active.')
@@ -183,8 +173,8 @@ async def cmd_mia(ctx, group_arg="tkn"):
 			msg += r[i].text+'\n'
 
 	embed = discord.Embed(
-		title=GROUP,
-		url=URL,
+		title=group['name'],
+		url=group['url'],
 		description=msg,
 		color=0xFF5733)
 
@@ -201,12 +191,8 @@ async def cmd_group(ctx, group_arg="tkn"):
 		await ctx.send("I don't know that group.")
 		return
 
-	altname = group['alt']
-	session = sessions[altname]
+	session = sessions[group['alt']]
 
-	GROUP 	= group['name']
-	URL 	= group['url']
-	COLOR	= group['color']
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
@@ -220,7 +206,7 @@ async def cmd_group(ctx, group_arg="tkn"):
 
 	# the path below catches both active and MIA alts
 	# if nothing is found the contact list may be empty
-	path = '//a[contains(@class,"' + COLOR +'")]'
+	path = '//a[contains(@class,"' + group['color'] +'")]'
 	r = tree.xpath(path)
 	if len(r) == 0:
 		await cts.send('Please have the bot herder check if the contact list is empty.')
@@ -233,7 +219,7 @@ async def cmd_group(ctx, group_arg="tkn"):
 
 	mia = ''
 
-	path = '//a[contains(@class,"' + COLOR +'")]/strike'
+	path = '//a[contains(@class,"' + group['color'] +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) != 0:
 		for i in range(0,len(r)):
@@ -244,8 +230,8 @@ async def cmd_group(ctx, group_arg="tkn"):
 	# build the embed
 
 	embed = discord.Embed(
-		title=GROUP,
-		url=URL,
+		title=group['name'],
+		url=group['url'],
 		description="Group overview",
 		color=0xFF5733)
 
