@@ -49,21 +49,6 @@ for altname, altpass in config['alts'].items():
 
 items = load_yaml('items.yaml', 'r')
 abbrevs = load_yaml('item-abbrev.yaml', 'r')
-#with open('items.yaml', 'r') as f:
-#	try:
-#		items = yaml.load(f, Loader=yaml.FullLoader)
-#	except Exception as e:
-#		sys.exit(e)
-#	finally:
-#		f.close()
-#
-#with open('item-abbrev.yaml', 'r') as f:
-#	try:
-#		abbrevs = yaml.load(f, Loader=yaml.FullLoader)
-#	except Exception as e:
-#		sys.exit(e)
-#	finally:
-#		f.close()
 
 
 bot = commands.Bot(command_prefix=PREFIX)
@@ -91,8 +76,9 @@ async def on_command_error(ctx, error):
 #@commands.has_role(ALLOWED)
 async def cmd_listgroups(ctx):
 
-	msg = '```\nsupported groups:\n\n' + '\n'.join(groups) + '\n```'
-	await ctx.send(msg)
+	fmt = '```\nsupported groups:\n\n{}\n```'
+	await ctx.send(fmt.format( '\n'.join(groups) ))
+
 
 @bot.command(name='active', help='active group members')
 #@commands.has_role(ALLOWED)
