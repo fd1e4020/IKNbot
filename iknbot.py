@@ -122,8 +122,7 @@ async def cmd_active(ctx, group_arg="tkn"):
 		await cts.send('Please have the bot herder check if the contact list is empty.')
 		return
 
-	# TODO can use range(len(r))?
-	for i in range(0,len(r)):
+	for i in range(len(r)):
 		if r[i].text != None:
 			msg += r[i].text+'\n'
 
@@ -167,7 +166,7 @@ async def cmd_mia(ctx, group_arg="tkn"):
 		await cts.send('All members of this group are active.')
 		return
 
-	for i in range(0,len(r)):
+	for i in range(len(r)):
 		# TODO test for "can't happen" instead?
 		if r[i].text != None:
 			msg += r[i].text+'\n'
@@ -213,7 +212,7 @@ async def cmd_group(ctx, group_arg="tkn"):
 		return
 
 	# TODO if r[i].text is None, do an xpath to the strike element instead
-	for i in range(0,len(r)):
+	for i in range(len(r)):
 		if r[i].text != None:
 			active += r[i].text+'\n'
 
@@ -222,7 +221,7 @@ async def cmd_group(ctx, group_arg="tkn"):
 	path = '//a[contains(@class,"' + group['color'] +'")]/strike'
 	r = tree.xpath(path)
 	if len(r) != 0:
-		for i in range(0,len(r)):
+		for i in range(len(r)):
 			# TODO test for "can't happen" instead?
 			if r[i].text != None:
 				mia += r[i].text+'\n'
@@ -253,14 +252,10 @@ async def cmd_item(ctx, *args):
 
 	fields = [ "locations", "encumbrance", "accuracy", "damage", "notes"]
 
-	try:
-		arg = abbrevs[arg]
-	except:
-		pass
+	arg = abbrevs.get(arg,arg)
 
-	try:
-		item = items[arg]
-	except:
+	item = items.get(arg)
+	if item == None:
 		await ctx.send(arg + ' not found')
 		return
 
@@ -271,11 +266,9 @@ async def cmd_item(ctx, *args):
 		color=0xFF5733)
 
 	for f in fields:
-		try:
-			val = item[f]
+		val = item.get(f)
+		if val != None:
 			embed.add_field(name=f, value=val, inline=False)
-		except:
-			pass
 
 	await ctx.send(embed=embed)
 
