@@ -10,26 +10,28 @@ from lxml import etree
 import sys
 import yaml
 
-# TODO for future upgrades, use .config.yaml instead
-# in particular:
-#
-#  groups:
-#    - GROUP_NAME_1:
-#      alt_name: ALT_NAME
-#      alt_pass: ALT_PASS
-#      group_color: COLOR_NUMBER for group
-#      auth_role: AUTHORIZED role
-#      auth_users:
-#        - user1
-#        - ...
 
-with open('.config.yaml', 'r') as f:
-	try:
-		config = yaml.load(f, Loader=yaml.FullLoader)
-	except Exception as e:
-		sys.exit(e)
-	finally:
-		f.close()
+def open_yaml(filename, mode):
+
+	with open(filename, mode) as f:
+		try:
+			data = yaml.load(f, Loader=yaml.FullLoader)
+		except Exception as e:
+			sys.exit(e)
+		finally:
+			f.close()
+	return data
+
+
+
+config = open_yaml('.config.yaml', 'r')
+#with open('.config.yaml', 'r') as f:
+#	try:
+#		config = yaml.load(f, Loader=yaml.FullLoader)
+#	except Exception as e:
+#		sys.exit(e)
+#	finally:
+#		f.close()
 
 try:
 	TOKEN	= config['token']
