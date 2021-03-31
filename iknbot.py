@@ -77,10 +77,6 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CheckFailure):
         await ctx.send('You failed a check somewhere.')
 
-# TODO *** DRY DRY DRY ***
-#	The %active, %mia, and %groups commands need some
-#	serious refactoring
-
 #
 # group-related commands
 #
@@ -91,8 +87,6 @@ async def cmd_listgroups(ctx):
 
 	fmt = '```\nsupported groups:\n\n{}\n```'
 	await ctx.send(fmt.format( '\n'.join(groups) ))
-
-
 @bot.command(name='active', help='active group members')
 #@commands.has_role(ALLOWED)
 async def cmd_active(ctx, group_arg="tkn"):
@@ -220,9 +214,9 @@ async def cmd_group(ctx, group_arg="tkn"):
 		description="Group overview",
 		color=0xFF5733)
 
-	if active != '':
+	if len(active) != 0:
 		embed.add_field(name="Active", value='\n'.join(active), inline=True)
-	if mia != '':
+	if len(mia) != 0:
 		embed.add_field(name="MIA", value='\n'.join(mia), inline=True)
 
 	await ctx.send(embed=embed)
