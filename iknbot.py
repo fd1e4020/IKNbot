@@ -11,7 +11,7 @@ import sys
 import yaml
 
 
-def open_yaml(filename, mode):
+def load_yaml(filename, mode):
 
 	with open(filename, mode) as f:
 		try:
@@ -24,27 +24,17 @@ def open_yaml(filename, mode):
 
 
 
-config = open_yaml('.config.yaml', 'r')
-#with open('.config.yaml', 'r') as f:
-#	try:
-#		config = yaml.load(f, Loader=yaml.FullLoader)
-#	except Exception as e:
-#		sys.exit(e)
-#	finally:
-#		f.close()
+config = load_yaml('.config.yaml', 'r')
 
 try:
 	TOKEN	= config['token']
 	PREFIX	= config['prefix']
 	groups	= config['groups']
-
 except:
 	sys.exit('broken .config.yaml')
 
 intents = discord.Intents.all()
 #client = discord.Client(intents=intents)
-
-# TODO proper error handling for all web requests
 
 sessions = {}
 
@@ -57,21 +47,23 @@ for altname, altpass in config['alts'].items():
 	except Exception as e:
 		raise SystemExit(e)
 
-with open('items.yaml', 'r') as f:
-	try:
-		items = yaml.load(f, Loader=yaml.FullLoader)
-	except Exception as e:
-		sys.exit(e)
-	finally:
-		f.close()
-
-with open('item-abbrev.yaml', 'r') as f:
-	try:
-		abbrevs = yaml.load(f, Loader=yaml.FullLoader)
-	except Exception as e:
-		sys.exit(e)
-	finally:
-		f.close()
+items = load_yaml('items.yaml', 'r')
+abbrevs = load_yaml('item-abbrev.yaml', 'r')
+#with open('items.yaml', 'r') as f:
+#	try:
+#		items = yaml.load(f, Loader=yaml.FullLoader)
+#	except Exception as e:
+#		sys.exit(e)
+#	finally:
+#		f.close()
+#
+#with open('item-abbrev.yaml', 'r') as f:
+#	try:
+#		abbrevs = yaml.load(f, Loader=yaml.FullLoader)
+#	except Exception as e:
+#		sys.exit(e)
+#	finally:
+#		f.close()
 
 
 bot = commands.Bot(command_prefix=PREFIX)
