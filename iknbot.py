@@ -10,6 +10,9 @@ from lxml import etree
 import sys
 import yaml
 
+#
+# utility functions
+#
 
 def load_yaml(filename, mode):
 
@@ -22,7 +25,9 @@ def load_yaml(filename, mode):
 			f.close()
 	return data
 
-
+#
+# load config, setup
+#
 
 config = load_yaml('.config.yaml', 'r')
 
@@ -33,8 +38,8 @@ try:
 except:
 	sys.exit('broken .config.yaml')
 
-intents = discord.Intents.all()
-#client = discord.Client(intents=intents)
+
+# create sessions and login
 
 sessions = {}
 
@@ -47,9 +52,16 @@ for altname, altpass in config['alts'].items():
 	except Exception as e:
 		raise SystemExit(e)
 
+# load item data
 items = load_yaml('items.yaml', 'r')
 abbrevs = load_yaml('item-abbrev.yaml', 'r')
 
+intents = discord.Intents.all()
+#client = discord.Client(intents=intents)
+
+#
+# end of setup
+#
 
 bot = commands.Bot(command_prefix=PREFIX)
 
@@ -69,8 +81,9 @@ async def on_command_error(ctx, error):
 #	The %active, %mia, and %groups commands need some
 #	serious refactoring
 
-# TODO "paginate" if output is too long
-
+#
+# group-related commands
+#
 
 @bot.command(name='listgroups', help='list currently supported groups')
 #@commands.has_role(ALLOWED)
@@ -84,10 +97,9 @@ async def cmd_listgroups(ctx):
 #@commands.has_role(ALLOWED)
 async def cmd_active(ctx, group_arg="tkn"):
 
-	try:
-		group = groups[group_arg]
-	except:
-		await ctx.send("I don't know that group")
+	group = groups.get(group_arg)
+	if group is None:
+		await ctx.send("I don't know that group.")
 		return
 
 	altname = group['alt']
@@ -99,11 +111,8 @@ async def cmd_active(ctx, group_arg="tkn"):
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
-	except requests.exceptions.RequestException as e:
-		await ctx.send('Connection error to urbandead.com')
-		return
-	if r.status_code != 200:
-		await ctx.send('Bad status code while retrieving the contacts')
+	except Exception as e:
+		await ctx.send('Connection error to urbandead.com', e)
 		return
 		
 	tree = etree.HTML(r.text)
@@ -124,7 +133,7 @@ async def cmd_active(ctx, group_arg="tkn"):
 			msg += r[i].text+'\n'
 
 	if msg == '':
-		await ctx.send('Sorry, no active players of that group found.')
+		await ctx.send('Sorry, no active members of that group found.')
 		return
 
 	embed = discord.Embed(
@@ -140,10 +149,9 @@ async def cmd_active(ctx, group_arg="tkn"):
 #@commands.has_role(ALLOWED)
 async def cmd_mia(ctx, group_arg="tkn"):
 
-	try:
-		group = groups[group_arg]
-	except:
-		await ctx.send("I don't know that group")
+	group = groups.get(group_arg)
+	if group is None:
+		await ctx.send("I don't know that group.")
 		return
 
 	altname = group['alt']
@@ -155,11 +163,8 @@ async def cmd_mia(ctx, group_arg="tkn"):
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
-	except requests.exceptions.RequestException as e:
-		await ctx.send('Connection error to urbandead.com')
-		return
-	if r.status_code != 200:
-		await ctx.send('Bad status code while retrieving the contacts')
+	except Exception as e:
+		await ctx.send('Connection error to urbandead.com', e)
 		return
 		
 	tree = etree.HTML(r.text)
@@ -191,10 +196,9 @@ async def cmd_mia(ctx, group_arg="tkn"):
 #@commands.has_role(ALLOWED)
 async def cmd_group(ctx, group_arg="tkn"):
 
-	try:
-		group = groups[group_arg]
-	except:
-		await ctx.send("I don't know that group")
+	group = groups.get(group_arg)
+	if group is None:
+		await ctx.send("I don't know that group.")
 		return
 
 	altname = group['alt']
@@ -206,11 +210,8 @@ async def cmd_group(ctx, group_arg="tkn"):
 
 	try:
 		r = session.get('http://urbandead.com/contacts.cgi')
-	except requests.exceptions.RequestException as e:
-		await ctx.send('Connection error to urbandead.com')
-		return
-	if r.status_code != 200:
-		await ctx.send('Bad status code while retrieving the contacts')
+	except Exception as e:
+		await ctx.send('Connection error to urbandead.com'. e)
 		return
 		
 	tree = etree.HTML(r.text)
@@ -255,9 +256,13 @@ async def cmd_group(ctx, group_arg="tkn"):
 
 	await ctx.send(embed=embed)
 
+#
+# item-related commands
+#
+
 @bot.command(name='item', help='item quick-info')
 async def cmd_item(ctx, *args):
-	# don't require quoting
+
 	arg = ' '.join(args)
 
 	fields = [ "locations", "encumbrance", "accuracy", "damage", "notes"]
@@ -309,5 +314,8 @@ abbreviations:
 
 	await ctx.send(fmt.format(msg_items, msg_abbrev))
 
+#
+# *** actually run the bot ***
+#
 
 bot.run(TOKEN)
