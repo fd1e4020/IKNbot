@@ -308,17 +308,26 @@ async def cmd_item(ctx, *args):
 
 	await ctx.send(embed=embed)
 
+
 @bot.command(name='listitems', help='items I Know Nothing about')
-async def cmd_listitems(ctx, *args):
+async def cmd_listitems(ctx):
 
-	ikn = '```\nknown items:\n\n'
-	for i in items:
-		ikn += i + '\n'
-	ikn += '\nabbreviatons:\n\n'
-	for k, v in abbrevs.items():
-		ikn += k + ': ' + v + '\n'
-	ikn += '```'
+	msg_items = '\n'.join(items)
+	msg_abbrev = '\n'.join('{}: {}'.format(key, value) for key, value in abbrevs.items())
 
-	await ctx.send(ikn)
+	fmt = '''
+```
+known items:
+
+{}
+
+abbreviations:
+
+{}
+```
+'''
+
+	await ctx.send(fmt.format(msg_items, msg_abbrev))
+
 
 bot.run(TOKEN)
