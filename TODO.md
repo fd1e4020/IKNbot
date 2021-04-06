@@ -1,24 +1,15 @@
 # TODO
 
-
--   **code cleanup**
-
-    Write better ideomatic code. Srsly. Nobody needs to know who's more
-    at home with assembler and C than Python. Also, add error handling.
-
-    DRY!! There's too much duplicated code
+-   mall finder
 
 -   properly daemonize the bot
 
     Create a wrapper script to capture STDOUT and STDERR into log files,
     a .service file, and a logrotate entry. Add an install script/playbook?
 
+-   %bookmarks - display list of interesting wiki links / other bookmarks
+
 -   Cache alt name to profile ID mappings
-
--   multiple guild support
-
-    Generalize the bot to support per-server/guild configurations. Due to
-    the sensitive nature of the dedicated alt(s), this is tricky.
 
 -   support large numbers of alts
 

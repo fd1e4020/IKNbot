@@ -273,6 +273,23 @@ abbreviations:
 
 	await ctx.send(fmt.format(msg_items, msg_abbrev))
 
+
+@bot.command(name='links', help='interesting links')
+async def cmd_links(ctx):
+
+	with open('links.yaml', 'r') as f:
+		try:
+			links = yaml.load(f, Loader=yaml.FullLoader)
+		except Exception as e:
+			await ctx.send("couldn't read links.yaml:",e)
+			return
+		finally:
+			f.close()	
+	
+	#print(yaml.dump(links))
+	print(links)
+	await ctx.send(links['text'])
+
 #
 # *** actually run the bot ***
 #
