@@ -286,8 +286,6 @@ async def cmd_links(ctx):
 		finally:
 			f.close()	
 	
-	#print(yaml.dump(links))
-	print(links)
 	await ctx.send(links['text'])
 
 #
