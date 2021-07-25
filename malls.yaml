@@ -1,0 +1,99 @@
+---
+
+Ackland:
+  NW: 32,44
+  NE: 33,44
+  SW: 32,45
+  SE: 33,45
+Bale:
+  NW: 43,9
+  NE: 44,9
+  SW: 43,10
+  SE: 44,10
+Blesley:
+  NW: 78,73
+  NE: 79,73
+  SW: 78,74
+  SE: 79,74
+Buckley:
+  NW: 49,98
+  NE: 50,98
+  SW: 49,99
+  SE: 50,99
+Caiger:
+  NW: 19,27
+  NE: 20,27
+  SW: 19,28
+  SE: 20,28
+Calvert:
+  NW: 25,9
+  NE: 26,9
+  SW: 25,10
+  SE: 26,10
+Dowdney:
+  NW: 75,28
+  NE: 76,28
+  SW: 75,29
+  SE: 76,29
+Giddings:
+  NW: 84,41
+  NE: 85,41
+  SW: 84,42
+  SE: 85,42
+Hildebrand:
+  NW: 66,55
+  NE: 67,55
+  SW: 66,56
+  SE: 67,56
+Joachim:
+  NW: 90,79
+  NE: 91,79
+  SW: 90,80
+  SE: 91,80
+Lumber:
+  N: 99,77
+  S: 99,78
+Marven:
+  NW: 28,76
+  NE: 29,76
+  SW: 28,77
+  SE: 29,77
+Mitchem:
+  NW: 85,65
+  NE: 86,65
+  SW: 85,66
+  SE: 86,66
+Nichols:
+  NW: 58,52
+  NE: 59,52
+  SW: 58,53
+  SE: 59,53
+Pole:
+  NW: 52,80
+  NE: 53,80
+  SE: 53,81
+Stickling:
+  NW: 52,23
+  NE: 53,23
+  SW: 52,24
+  SE: 53,24
+Tompson:
+  NW: 20,81
+  NE: 21,81
+  SW: 20,82
+  SE: 21,82
+Treweeke:
+  NW: 92,7
+  NE: 93,7
+  SW: 92,8
+  SE: 93,8
+Tynte:
+  NW: 67,44
+  NE: 68,44
+  SW: 67,45
+  SE: 68,45
+Woodroffe:
+  NW: 62,62
+  NE: 63,62
+  SW: 63,62
+  SE: 63,63
