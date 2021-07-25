@@ -378,7 +378,7 @@ async def cmd_links(ctx,*args):
 
 	msg = "\n```\nDistance to malls:\n\n"
 
-	fmt = '\n{0:12} {1:2} ( walk {2} )'
+	fmt = '\n{0:12} {1:2} ( {2} )'
 
 	for n in range(len(dsort)):
 		mallname = dsort[n][0]
