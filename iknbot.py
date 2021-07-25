@@ -306,13 +306,13 @@ def cardinals(dx,dy):
 	ew = ''
 	ns = ''
 	if dx > 0:
-		ew = 'E'
-	elif dx < 0:
 		ew = 'W'
+	elif dx < 0:
+		ew = 'E'
 	if dy > 0:
-		ns = 'S'
-	elif dy < 0:
 		ns = 'N'
+	elif dy < 0:
+		ns = 'S'
 	return ns + ew
 
 def walkdirections(fx, fy, tx, ty):
