@@ -338,7 +338,9 @@ def walkdirections(fx, fy, tx, ty):
 	assert((dx == 0) or (dy == 0))
 	hv = abs(dx+dy)
 	if hv != 0:
-		steps += ', ' + str(hv) + ' ' + cardinals(dx,dy)
+		if diags != 0:
+			steps += ', '
+		steps += str(hv) + ' ' + cardinals(dx,dy)
 
 	return steps
 
