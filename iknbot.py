@@ -302,6 +302,48 @@ def splitcoords(coords):
 		y = -1
 	return (x,y)
 
+def cardinals(dx,dy):
+	ew = ''
+	ns = ''
+	if dx > 0:
+		ew = 'E'
+	elif dx < 0:
+		ew = 'W'
+	if dy > 0:
+		ns = 'S'
+	elif dy < 0:
+		ns = 'N'
+	return ns + ew
+
+def walkdirections(fx, fy, tx, ty):
+	# cardinal distances
+	dx = fx - tx
+	dy = fy - ty
+	# there already?
+	if (dx == 0) and (dy == 0):
+		return "you are there already"
+	steps = ''
+	# diagnonal steps?
+	diags = min(abs(dx),abs(dy))
+	if diags != 0:
+		steps += str(diags) + ' ' + cardinals(dx,dy)
+		if dx > 0:
+			dx -= diags
+		else:
+			dx += diags
+		if dy > 0:
+			dy -= diags
+		else:
+			dy += diags
+	assert((dx == 0) or (dy == 0))
+	hv = abs(dx+dy)
+	if hv != 0:
+		steps += ', ' + str(hv) + ' ' + cardinals(dx,dy)
+
+	return steps
+
+
+
 @bot.command(name='malls', help='print distance to malls from given coords')
 async def cmd_links(ctx,*args):
 
@@ -314,6 +356,7 @@ async def cmd_links(ctx,*args):
 		return
 
 	mdist = {}
+	bestcorner = {}
 
 	for mallname, corners in malls.items():
 
@@ -322,7 +365,10 @@ async def cmd_links(ctx,*args):
 		for coords in corners.values():
 			(mx, my) = splitcoords(coords)
 			dcorner = max(abs(x-mx),abs(y-my))
+			dold = distance
 			distance = min(distance,dcorner)
+			if dold > distance:
+				bestcorner[mallname] = coords
 
 		mdist[mallname] = distance
 
@@ -330,17 +376,30 @@ async def cmd_links(ctx,*args):
 
 	msg = "\n```\nDistance to malls:\n\n"
 
-	fmt = '\n{0:12} {1:2}'
+	fmt = '\n{0:12} {1:2} ( walk {2} )'
 
 	for n in range(len(dsort)):
 		mallname = dsort[n][0]
 		distance = dsort[n][1]
-		msg += fmt.format(mallname,str(distance))
+		(mx, my) = splitcoords( bestcorner[mallname] )
+		msg += fmt.format(mallname,str(distance), walkdirections(x,y,mx,my))
 
 	msg += '\n```'
 
 	await ctx.send(msg)
 
+@bot.command(name='steps', help='steps from a,b to c,d')
+async def cmd_links(ctx,fxy,txy):
+
+	(fx,fy) = splitcoords(fxy)
+	(tx,ty) = splitcoords(txy)
+
+	if (fx == -1) or (tx == -1):
+		msg = "usage: 'steps a,b c,d'"
+		await ctx.send(msg)
+		return
+
+	await ctx.send(walkdirections(fx,fy,tx,ty))
 
 #
 # *** actually run the bot ***
