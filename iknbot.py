@@ -369,9 +369,13 @@ async def cmd_links(ctx,*args):
 			dcorner = max(abs(x-mx),abs(y-my))
 			dold = distance
 			distance = min(distance,dcorner)
-			if dold > distance:
+			if dcorner == 0:
 				bestcorner[mallname] = coords
-			if (dold == distance) and ((x == mx) or (y == my)):
+				mdist[mallname] = 0
+				break
+			elif dold > distance:
+				bestcorner[mallname] = coords
+			elif (dold == distance) and ((x == mx) or (y == my)):
 				bestcorner[mallname] = coords
 
 		mdist[mallname] = distance
