@@ -3,12 +3,12 @@
 import os
 import discord
 from discord.ext import commands
-from dotenv import load_dotenv
 import requests
 import urllib.parse
 from lxml import etree
 import sys
 import yaml
+#from operator import itemgetter, attrgetter
 
 #
 # utility functions
@@ -56,6 +56,9 @@ for altname, altpass in config['alts'].items():
 items = load_yaml('items.yaml', 'r')
 abbrevs = load_yaml('item-abbrev.yaml', 'r')
 
+# load mall data
+malls = load_yaml('malls.yaml', 'r')
+
 intents = discord.Intents.all()
 #client = discord.Client(intents=intents)
 
@@ -87,6 +90,7 @@ async def cmd_listgroups(ctx):
 
 	fmt = '```\nsupported groups:\n\n{}\n```'
 	await ctx.send(fmt.format( '\n'.join(groups) ))
+
 @bot.command(name='active', help='active group members')
 #@commands.has_role(ALLOWED)
 async def cmd_active(ctx, group_arg="tkn"):
@@ -287,6 +291,56 @@ async def cmd_links(ctx):
 			f.close()	
 	
 	await ctx.send(links['text'])
+
+def splitcoords(coords):
+	s = coords.split(',',1)
+	try:
+		x = int(s[0])
+		y = int(s[1])
+	except:
+		x = -1
+		y = -1
+	return (x,y)
+
+@bot.command(name='malls', help='print distance to malls from given coords')
+async def cmd_links(ctx,*args):
+
+	arg = ','.join(args)
+	(x,y) = splitcoords(arg)
+
+	if x == -1:
+		msg = "usage: 'malls x y' or 'mall x,y"
+		await ctx.send(msg)
+		return
+
+	mdist = {}
+
+	for mallname, corners in malls.items():
+
+		distance = 100
+
+		for coords in corners.values():
+			(mx, my) = splitcoords(coords)
+			dcorner = max(abs(x-mx),abs(y-my))
+			distance = min(distance,dcorner)
+
+		mdist[mallname] = distance
+
+	dsort = sorted(mdist.items(), key=lambda kv: int(kv[1]))
+
+	msg = "\n```\nDistance to malls:\n\n"
+
+	fmt = '\n{0:12} {1:2}'
+
+	for n in range(len(dsort)):
+		mallname = dsort[n][0]
+		distance = dsort[n][1]
+		msg += fmt.format(mallname,str(distance))
+
+	msg += '\n```'
+
+	await ctx.send(msg)
+
 
 #
 # *** actually run the bot ***
